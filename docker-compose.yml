@@ -2,6 +2,8 @@
 version: "3.4"
 
 services:
+  hello:
+    image: hello-world
   # # NocoBase
   # nocobase:
   #   # image: nocobase/nocobase:0.21.0-alpha.16
