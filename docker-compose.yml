@@ -39,13 +39,13 @@ services:
         - "traefik.http.routers.coder2.entrypoints=websecure"
         - "traefik.http.routers.coder2.service=coder2"
         - "traefik.http.routers.coder2.middlewares=noauth-chain@file"
-        - "traefik.http.services.coder2.loadbalancer.server.port=3000"
+        - "traefik.http.services.coder2.loadbalancer.server.port=7080"
         - homepage.group=Database & Development
         - homepage.name=Coder2
         - homepage.icon=vscode.png
         - homepage.href=https://coder2.${DOMAIN_SWARM}:4/
         - homepage.description=CodeServer代码编辑服务
-        - homepage.siteMonitor=http://coder2:3000
+        - homepage.siteMonitor=http://coder2:7080
         - homepage.weight=2
       mode: replicated
       replicas: 1
