@@ -4,6 +4,7 @@ version: "3.4"
 services:   
   coder1:
     image: gitpod/openvscode-server:latest
+    networks: [network_cluster]    
     deploy:
       labels:      
         - "traefik.enable=true"
@@ -28,6 +29,7 @@ services:
 
   coder2:
     image: ghcr.io/coder/coder:latest
+    networks: [network_cluster]    
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
