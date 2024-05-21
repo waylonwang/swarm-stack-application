@@ -4,6 +4,13 @@ version: "3.4"
 services:
   hello:
     image: hello-world
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.type == vm
+          - node.labels.application == true    
   # # NocoBase
   # nocobase:
   #   # image: nocobase/nocobase:0.21.0-alpha.16
