@@ -498,7 +498,7 @@ x-common-media-ext-volume: &common-media-ext-volume
   type: nfs
   o: addr=${MEDIA_EXT_SERVER},rw,nfsvers=4
 
-volumes:
+# volumes:
   # # NFS
   # nfs_nocobase:
   #   driver: local
