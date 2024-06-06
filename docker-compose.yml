@@ -2,69 +2,89 @@
 # Update Time: 2024-2-1 21:10
 version: "3.4"
 
-services:
-  coder1:
-    image: gitpod/openvscode-server:latest
+x-defines:
+  service-common: &service-common-ref
     networks: [network_cluster]
-    deploy:
-      labels:
-        - traefik.enable=true
-        - traefik.http.routers.coder1.rule=Host(`coder1.${DOMAIN_SWARM}`,`coder1.${DOMAIN_EMERGENCY}`)
-        - traefik.http.routers.coder1.entrypoints=websecure
-        - traefik.http.routers.coder1.service=coder1
-        - traefik.http.routers.coder1.middlewares=auth,normal-chain@file
-        - traefik.http.services.coder1.loadbalancer.server.port=3000
-        - homepage.group=Database & Development
-        - homepage.name=Coder1
-        - homepage.icon=vscode.png
-        - homepage.href=https://coder1.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
-        - homepage.description=CodeServer代码编辑服务
-        - homepage.siteMonitor=http://coder1:3000
-        - homepage.weight=2
-      mode: replicated
-      replicas: 0
-      placement:
-        constraints:
-          - node.labels.type == vm
-          - node.labels.development == true
+  env-common: &env-common-ref
+    NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,::1}
+    TZ: ${TZ:-Asia/Shanghai}    
+  env-proxy: &env-proxy-ref
+    HTTP_PROXY: ${OPENCLASH_HTTP_PROXY}
+    HTTPS_PROXY: ${OPENCLASH_HTTP_PROXY}
+  deploy-common: &deploy-common-ref
+    mode: replicated
+    replicas: 1
+    restart_policy:
+      condition: on-failure
+      delay: 5s      
+  placement-default: &placement-default-ref
+    placement:
+      constraints:
+        - node.labels.type == vm
+        - node.labels.automation == true
+  driver-common: &driver-common-ref
+    type: nfs
+    o: addr=${NFS_SERVER},rw, nfsvers=4
 
-  coder2:
-    image: ghcr.nju.edu.cn/coder/coder:latest
-    networks: [network_cluster]
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      CODER_HTTP_ADDRESS: "0.0.0.0:7080"
-    deploy:
-      labels:
-        - traefik.enable=true
-        - traefik.http.routers.coder2.rule=Host(`coder2.${DOMAIN_SWARM}`,`coder2.${DOMAIN_EMERGENCY}`)
-        - traefik.http.routers.coder2.entrypoints=websecure
-        - traefik.http.routers.coder2.service=coder2
-        - traefik.http.routers.coder2.middlewares=auth,normal-chain@file
-        - traefik.http.services.coder2.loadbalancer.server.port=7080
-        - homepage.group=Database & Development
-        - homepage.name=Coder2
-        - homepage.icon=vscode.png
-        - homepage.href=https://coder2.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
-        - homepage.description=CodeServer代码编辑服务
-        - homepage.siteMonitor=http://coder2:7080
-        - homepage.weight=2
-      mode: replicated
-      replicas: 0
-      placement:
-        constraints:
-          - node.labels.type == vm
-          - node.labels.development == true
+# services:
+#   coder1:
+#     image: gitpod/openvscode-server:latest
+#     networks: [network_cluster]
+#     deploy:
+#       labels:
+#         - traefik.enable=true
+#         - traefik.http.routers.coder1.rule=Host(`coder1.${DOMAIN_SWARM}`,`coder1.${DOMAIN_EMERGENCY}`)
+#         - traefik.http.routers.coder1.entrypoints=websecure
+#         - traefik.http.routers.coder1.service=coder1
+#         - traefik.http.routers.coder1.middlewares=auth,normal-chain@file
+#         - traefik.http.services.coder1.loadbalancer.server.port=3000
+#         - homepage.group=Database & Development
+#         - homepage.name=Coder1
+#         - homepage.icon=vscode.png
+#         - homepage.href=https://coder1.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
+#         - homepage.description=CodeServer代码编辑服务
+#         - homepage.siteMonitor=http://coder1:3000
+#         - homepage.weight=2
+#       mode: replicated
+#       replicas: 0
+#       placement:
+#         constraints:
+#           - node.labels.type == vm
+#           - node.labels.development == true
+
+#   coder2:
+#     image: ghcr.nju.edu.cn/coder/coder:latest
+#     networks: [network_cluster]
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock
+#     environment:
+#       CODER_HTTP_ADDRESS: "0.0.0.0:7080"
+#     deploy:
+#       labels:
+#         - traefik.enable=true
+#         - traefik.http.routers.coder2.rule=Host(`coder2.${DOMAIN_SWARM}`,`coder2.${DOMAIN_EMERGENCY}`)
+#         - traefik.http.routers.coder2.entrypoints=websecure
+#         - traefik.http.routers.coder2.service=coder2
+#         - traefik.http.routers.coder2.middlewares=auth,normal-chain@file
+#         - traefik.http.services.coder2.loadbalancer.server.port=7080
+#         - homepage.group=Database & Development
+#         - homepage.name=Coder2
+#         - homepage.icon=vscode.png
+#         - homepage.href=https://coder2.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
+#         - homepage.description=CodeServer代码编辑服务
+#         - homepage.siteMonitor=http://coder2:7080
+#         - homepage.weight=2
+#       mode: replicated
+#       replicas: 0
+#       placement:
+#         constraints:
+#           - node.labels.type == vm
+#           - node.labels.development == true
 
 
 networks:
   network_cluster:
     external: true
-
-x-driver-common-ref: &driver-common-ref
-  type: nfs
-  o: addr=${NFS_SERVER},rw,nfsvers=4
 
 
 # volumes:
