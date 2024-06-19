@@ -55,7 +55,7 @@ x-defines:
 #           - node.labels.development == true
 
 #   coder2:
-#     image: ghcr.nju.edu.cn/coder/coder:latest
+#     image: registry.${DOMAIN_SWARM}:${EXTERNAL_PORT}/coder/coder:latest
 #     networks: [network_cluster]
 #     volumes:
 #       - /var/run/docker.sock:/var/run/docker.sock
