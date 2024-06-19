@@ -34,7 +34,7 @@ services:
   crowdsec:
     <<: *service-common-ref
     # image-ref: crowdsecurity/crowdsec:v1.6.2
-    image: crowdsecurity/crowdsec:v1.6.2
+    image: registry.${DOMAIN_SWARM}:${EXTERNAL_PORT}/crowdsecurity/crowdsec:v1.6.2
     environment:
       <<: *env-common-ref
     volumes:
