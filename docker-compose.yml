@@ -23,7 +23,7 @@ x-defines:
     placement:
       constraints:
         - node.labels.type == vm
-        - node.labels.automation == true
+        - node.labels.application == true
   driver-common: &driver-common-ref
     type: nfs
     o: addr=${NFS_SERVER},rw, nfsvers=4
