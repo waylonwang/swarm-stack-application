@@ -131,10 +131,10 @@ volumes:
     driver: local
     driver_opts:
       <<: *driver-common-ref
-      device: :${NFS_DEVICE}/application/nfs_nocobase/crowdsec/conf
+      device: :${NFS_DEVICE}/application/secret/crowdsec/conf
   nfs_crowdsec_data:
     driver: local
     driver_opts:
       <<: *driver-common-ref
-      device: :${NFS_DEVICE}/application/nfs_nocobase/crowdsec/data      
+      device: :${NFS_DEVICE}/application/secret/crowdsec/data      
 ...
