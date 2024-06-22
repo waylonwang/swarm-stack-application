@@ -37,6 +37,7 @@ services:
     image: registry.${DOMAIN_SWARM}:${EXTERNAL_PORT}/crowdsecurity/crowdsec:v1.6.2
     environment:
       <<: *env-common-ref
+      PGID: 1000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
