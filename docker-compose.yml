@@ -56,6 +56,9 @@ services:
         - traefik.http.routers.crowdsec.service=crowdsec
         - traefik.http.routers.crowdsec.middlewares=auth,normal-chain@file
         - traefik.http.services.crowdsec.loadbalancer.server.port=8080
+        - traefik.udp.routers.rowdsec-syslog.entrypoints=crowdsec-syslog
+        - traefik.udp.routers.rowdsec-syslog.service=rowdsec-syslog
+        - traefik.udp.services.rowdsec-syslog.loadbalancer.server.port=4242      
         - homepage.group=Application
         - homepage.name=crowdsec
         - homepage.icon=crowdsec.png
