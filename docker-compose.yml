@@ -42,7 +42,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml
       # - nfs_crowdsec_data:/var/lib/crowdsec/data
-      # - nfs_crowdsec_conf:/etc/crowdsec
+      - nfs_crowdsec_conf:/etc/crowdsec
     logging:
       driver: fluentd
       options:
