@@ -46,7 +46,7 @@ services:
     logging:
       driver: fluentd
       options:
-        tag: docker.business.crowdsec
+        tag: docker.application.crowdsec
         fluentd-async-connect: "true"
     deploy:
       labels:
@@ -67,6 +67,40 @@ services:
         - homepage.siteMonitor=http://crowdsec:8080
         - homepage.weight=60
       <<: [*deploy-common-ref, *placement-default-ref]          
+
+  filebrowser:
+    <<: *service-common-ref
+    # image-ref: filebrowser/filebrowser:latest
+    image: registry.${DOMAIN_SWARM}:${EXTERNAL_PORT}/filebrowser/filebrowser:latest
+    environment:
+      <<: *env-common-ref
+      PID: 1000
+      PGID: 1000
+    volumes:
+      - nfs_filebrowser_data:/srv
+      - nfs_filebrowser_database:/database
+      - nfs_filebrowser_config:/config
+    logging:
+      driver: fluentd
+      options:
+        tag: docker.application.filebrowser
+        fluentd-async-connect: "true"
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.filebrowser.rule=Host(`filebrowser.${DOMAIN_SWARM}`,`filebrowser.${DOMAIN_EMERGENCY}`)
+        - traefik.http.routers.filebrowser.entrypoints=websecure
+        - traefik.http.routers.filebrowser.service=filebrowser
+        - traefik.http.routers.filebrowser.middlewares=auth,normal-chain@file
+        - traefik.http.services.filebrowser.loadbalancer.server.port=8080
+        - homepage.group=Application
+        - homepage.name=filebrowser
+        - homepage.icon=filebrowser.png
+        - homepage.href=https://filebrowser.${DOMAIN_SWARM}:${EXTERNAL_PORT}/
+        - homepage.description=filebrowser
+        - homepage.siteMonitor=http://filebrowser:8080
+        - homepage.weight=60
+      <<: [*deploy-common-ref, *placement-default-ref]     
 
 # services:
 #   coder1:
@@ -141,4 +175,19 @@ volumes:
     driver_opts:
       <<: *driver-common-ref
       device: :${NFS_DEVICE}/application/secret/crowdsec/data      
+  nfs_filebrowser_data:
+    driver: local
+    driver_opts:
+      <<: *driver-common-ref
+      device: :${NFS_DEVICE}/application/filebrowser/data 
+  nfs_filebrowser_database:
+    driver: local
+    driver_opts:
+      <<: *driver-common-ref
+      device: :${NFS_DEVICE}/application/filebrowser/database            
+  nfs_filebrowser_config:
+    driver: local
+    driver_opts:
+      <<: *driver-common-ref
+      device: :${NFS_DEVICE}/application/filebrowser/config            
 ...
