@@ -27,7 +27,12 @@ x-defines:
   driver-common: &driver-common-ref
     type: nfs
     o: addr=${NFS_SERVER},rw,nfsvers=4
-
+  driver-media-main: &driver-media-main-ref
+    type: nfs
+    o: addr=${MEDIA_SERVER},rw,nfsvers=4
+  driver-media-ext: &driver-media-ext-ref
+    type: nfs
+    o: addr=${MEDIA_EXT_SERVER},rw,nfsvers=4
 
 
 services:
@@ -77,7 +82,8 @@ services:
       PID: 1000
       PGID: 1000
     volumes:
-      - nfs_filebrowser_data:/srv
+      - nfs_filebrowser_main_media:/srv/main
+      - nfs_filebrowser_ext_media:/srv/ext
       - nfs_filebrowser_database:/database
       - nfs_filebrowser_config:/config
     logging:
@@ -175,11 +181,16 @@ volumes:
     driver_opts:
       <<: *driver-common-ref
       device: :${NFS_DEVICE}/application/secret/crowdsec/data      
-  nfs_filebrowser_data:
+  nfs_filebrowser_main_media:
     driver: local
     driver_opts:
-      <<: *driver-common-ref
-      device: :${NFS_DEVICE}/application/filebrowser/data 
+      <<: *driver-media-main-ref
+      device: :${MEDIA_DEVICE}
+  nfs_filebrowser_ext_media:
+    driver: local
+    driver_opts:
+      <<: *driver-media-ext-ref
+      device: :${MEDIA_DEVICE}
   nfs_filebrowser_database:
     driver: local
     driver_opts:
